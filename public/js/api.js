@@ -18,7 +18,6 @@ const detectApiBase = () => {
     window.location.hostname === 'localhost' && window.location.protocol === 'https:';
 
   if (isCapacitor) {
-    // Production backend URL - update this after deploying
     return 'https://lions-business-network.onrender.com/api';
   }
 
