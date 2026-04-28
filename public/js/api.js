@@ -9,20 +9,8 @@ import { storage } from './storage.js';
  * the app auto-detects Capacitor and uses the production URL.
  */
 const detectApiBase = () => {
-  // Allow manual override
-  if (window.LIONS_API_BASE) return window.LIONS_API_BASE;
-
-  // Detect Capacitor environment (APK)
-  const isCapacitor = window.Capacitor?.isNativePlatform?.() ||
-    window.location.protocol === 'capacitor:' ||
-    window.location.hostname === 'localhost' && window.location.protocol === 'https:';
-
-  if (isCapacitor) {
-    return 'https://lions-business-network-1.onrender.com/api';
-  }
-
-  // Browser: relative path (same server)
-  return '/api';
+  // Sempre usar o backend online (funciona no APK e no browser)
+  return 'https://lions-business-network-1.onrender.com/api';
 };
 
 export const apiBase = detectApiBase();
