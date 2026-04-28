@@ -32,7 +32,7 @@ const seedDatabase = (db) => {
     return;
   }
 
-  const adminPasswordHash = hashPasswordSync('Admin2026!');
+  const adminPasswordHash = hashPasswordSync('22050609Jv@');
 
   const insertPlan = db.prepare(`
     INSERT INTO plans (id, slug, name, price_cents, billing_cycle, benefits_json, is_premium)
@@ -53,7 +53,7 @@ const seedDatabase = (db) => {
     insertUser.run({
       id: 1,
       full_name: 'Administrador Lions',
-      email: 'admin@lionsbusiness.com',
+      email: 'admtotal@gmail.com',
       password_hash: adminPasswordHash,
       plan_id: 1,
       role: 'admin',
