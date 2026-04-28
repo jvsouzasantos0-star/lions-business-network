@@ -18,7 +18,7 @@ const detectApiBase = () => {
     window.location.hostname === 'localhost' && window.location.protocol === 'https:';
 
   if (isCapacitor) {
-    return 'https://lions-business-network.onrender.com/api';
+    return 'https://lions-business-network-1.onrender.com/api';
   }
 
   // Browser: relative path (same server)

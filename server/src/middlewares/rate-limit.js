@@ -17,9 +17,9 @@ const buildLimiter = (windowMs, limit) => rateLimit({
 });
 
 module.exports = {
-  registerLimiter: buildLimiter(15 * 60 * 1000, 5),
-  loginLimiter: buildLimiter(15 * 60 * 1000, 10),
-  refreshLimiter: buildLimiter(15 * 60 * 1000, 20),
-  publicLimiter: buildLimiter(60 * 1000, 60),
-  authReadLimiter: buildLimiter(60 * 1000, 120)
+  registerLimiter: buildLimiter(15 * 60 * 1000, 20),
+  loginLimiter: buildLimiter(15 * 60 * 1000, 50),
+  refreshLimiter: buildLimiter(15 * 60 * 1000, 50),
+  publicLimiter: buildLimiter(60 * 1000, 120),
+  authReadLimiter: buildLimiter(60 * 1000, 300)
 };
