@@ -21,22 +21,22 @@ const parse = (schema, data) => {
   return result.data;
 };
 
-const list = (req, res, next) => {
+const list = async (req, res, next) => {
   try {
     const filters = parse(listSchema, req.query);
     res.status(200).json({
-      data: offersService.listOffers(filters)
+      data: await offersService.listOffers(filters)
     });
   } catch (error) {
     next(error);
   }
 };
 
-const detail = (req, res, next) => {
+const detail = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
     res.status(200).json({
-      data: offersService.getOfferById(id)
+      data: await offersService.getOfferById(id)
     });
   } catch (error) {
     next(error);

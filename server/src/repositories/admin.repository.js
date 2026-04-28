@@ -23,83 +23,82 @@ const adminCompanySelect = `
   JOIN categories cat ON cat.id = c.category_id
 `;
 
-const listAllCompanies = () => {
+const listAllCompanies = async () => {
   const db = getDb();
-  return db.prepare(`${adminCompanySelect} ORDER BY c.name ASC`).all();
+  return db.query(`${adminCompanySelect} ORDER BY c.name ASC`);
 };
 
-const findCompanyByIdAdmin = (id) => {
+const findCompanyByIdAdmin = async (id) => {
   const db = getDb();
-  return db.prepare(`${adminCompanySelect} WHERE c.id = @id`).get({ id });
+  return db.queryOne(`${adminCompanySelect} WHERE c.id = $1`, [id]);
 };
 
-const findCompanyBySlugAdmin = (slug) => {
+const findCompanyBySlugAdmin = async (slug) => {
   const db = getDb();
-  return db.prepare('SELECT id FROM companies WHERE slug = @slug').get({ slug });
+  return db.queryOne('SELECT id FROM companies WHERE slug = $1', [slug]);
 };
 
-const createCompany = (data) => {
+const createCompany = async (data) => {
   const db = getDb();
-  const result = db.prepare(`
-    INSERT INTO companies (
+  const result = await db.run(
+    `INSERT INTO companies (
       name, slug, category_id, description, phone, whatsapp_number,
       discount_percent, logo_url, address, instagram, status,
       is_company_of_week, featured_order
-    ) VALUES (
-      @name, @slug, @category_id, @description, @phone, @whatsapp_number,
-      @discount_percent, @logo_url, @address, @instagram, @status, 0, 0
-    )
-  `).run({
-    name: data.name,
-    slug: data.slug,
-    category_id: data.category_id,
-    description: data.description,
-    phone: data.phone,
-    whatsapp_number: data.whatsapp_number,
-    discount_percent: data.discount_percent,
-    logo_url: data.logo_url ?? null,
-    address: data.address ?? null,
-    instagram: data.instagram ?? null,
-    status: data.status
-  });
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, false, 0)`,
+    [
+      data.name,
+      data.slug,
+      data.category_id,
+      data.description,
+      data.phone,
+      data.whatsapp_number,
+      data.discount_percent,
+      data.logo_url ?? null,
+      data.address ?? null,
+      data.instagram ?? null,
+      data.status
+    ]
+  );
   return result.lastInsertRowid;
 };
 
-const updateCompany = (id, data) => {
+const updateCompany = async (id, data) => {
   const db = getDb();
-  db.prepare(`
-    UPDATE companies
-    SET
-      name = @name,
-      category_id = @category_id,
-      description = @description,
-      phone = @phone,
-      whatsapp_number = @whatsapp_number,
-      discount_percent = @discount_percent,
-      logo_url = @logo_url,
-      address = @address,
-      instagram = @instagram,
-      status = @status,
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = @id
-  `).run({
-    id,
-    name: data.name,
-    category_id: data.category_id,
-    description: data.description,
-    phone: data.phone,
-    whatsapp_number: data.whatsapp_number,
-    discount_percent: data.discount_percent,
-    logo_url: data.logo_url ?? null,
-    address: data.address ?? null,
-    instagram: data.instagram ?? null,
-    status: data.status
-  });
+  await db.run(
+    `UPDATE companies
+     SET
+       name = $1,
+       category_id = $2,
+       description = $3,
+       phone = $4,
+       whatsapp_number = $5,
+       discount_percent = $6,
+       logo_url = $7,
+       address = $8,
+       instagram = $9,
+       status = $10,
+       updated_at = NOW()
+     WHERE id = $11`,
+    [
+      data.name,
+      data.category_id,
+      data.description,
+      data.phone,
+      data.whatsapp_number,
+      data.discount_percent,
+      data.logo_url ?? null,
+      data.address ?? null,
+      data.instagram ?? null,
+      data.status,
+      id
+    ]
+  );
 };
 
-const deleteCompany = (id) => {
+const deleteCompany = async (id) => {
   const db = getDb();
-  db.prepare('DELETE FROM companies WHERE id = @id').run({ id });
+  await db.run('DELETE FROM companies WHERE id = $1', [id]);
 };
 
 const adminOfferSelect = `
@@ -120,85 +119,93 @@ const adminOfferSelect = `
   JOIN companies c ON c.id = o.company_id
 `;
 
-const listAllOffers = () => {
+const listAllOffers = async () => {
   const db = getDb();
-  return db.prepare(`${adminOfferSelect} ORDER BY o.title ASC`).all();
+  return db.query(`${adminOfferSelect} ORDER BY o.title ASC`);
 };
 
-const findOfferByIdAdmin = (id) => {
+const findOfferByIdAdmin = async (id) => {
   const db = getDb();
-  return db.prepare(`${adminOfferSelect} WHERE o.id = @id`).get({ id });
+  return db.queryOne(`${adminOfferSelect} WHERE o.id = $1`, [id]);
 };
 
-const createOffer = (data) => {
+const createOffer = async (data) => {
   const db = getDb();
-  const result = db.prepare(`
-    INSERT INTO offers (
+  const result = await db.run(
+    `INSERT INTO offers (
       company_id, title, description, discount_percent,
       starts_at, expiry_date, status, is_premium_only, is_active
-    ) VALUES (
-      @company_id, @title, @description, @discount_percent,
-      @starts_at, @expiry_date, @status, 0, 1
-    )
-  `).run({
-    company_id: data.company_id,
-    title: data.title,
-    description: data.description,
-    discount_percent: data.discount_percent,
-    starts_at: data.starts_at,
-    expiry_date: data.expiry_date,
-    status: data.status
-  });
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, false, true)`,
+    [
+      data.company_id,
+      data.title,
+      data.description,
+      data.discount_percent,
+      data.starts_at,
+      data.expiry_date,
+      data.status
+    ]
+  );
   return result.lastInsertRowid;
 };
 
-const updateOffer = (id, data) => {
+const updateOffer = async (id, data) => {
   const db = getDb();
-  db.prepare(`
-    UPDATE offers
-    SET
-      company_id = @company_id,
-      title = @title,
-      description = @description,
-      discount_percent = @discount_percent,
-      starts_at = @starts_at,
-      expiry_date = @expiry_date,
-      status = @status,
-      updated_at = CURRENT_TIMESTAMP
-    WHERE id = @id
-  `).run({
-    id,
-    company_id: data.company_id,
-    title: data.title,
-    description: data.description,
-    discount_percent: data.discount_percent,
-    starts_at: data.starts_at,
-    expiry_date: data.expiry_date,
-    status: data.status
-  });
+  await db.run(
+    `UPDATE offers
+     SET
+       company_id = $1,
+       title = $2,
+       description = $3,
+       discount_percent = $4,
+       starts_at = $5,
+       expiry_date = $6,
+       status = $7,
+       updated_at = NOW()
+     WHERE id = $8`,
+    [
+      data.company_id,
+      data.title,
+      data.description,
+      data.discount_percent,
+      data.starts_at,
+      data.expiry_date,
+      data.status,
+      id
+    ]
+  );
 };
 
-const deleteOffer = (id) => {
+const deleteOffer = async (id) => {
   const db = getDb();
-  db.prepare('DELETE FROM offers WHERE id = @id').run({ id });
+  await db.run('DELETE FROM offers WHERE id = $1', [id]);
 };
 
-const getStats = () => {
+const getStats = async () => {
   const db = getDb();
-  const totalCompanies = db.prepare('SELECT COUNT(*) AS count FROM companies').get().count;
-  const activeCompanies = db.prepare("SELECT COUNT(*) AS count FROM companies WHERE status = 'active'").get().count;
-  const totalOffers = db.prepare('SELECT COUNT(*) AS count FROM offers').get().count;
-  const activeOffers = db.prepare("SELECT COUNT(*) AS count FROM offers WHERE status = 'active'").get().count;
-  const totalMembers = db.prepare("SELECT COUNT(*) AS count FROM users WHERE role = 'member'").get().count;
-  return { totalCompanies, activeCompanies, totalOffers, activeOffers, totalMembers };
+  const [totalComp, activeComp, totalOffers, activeOffers, totalMembers] = await Promise.all([
+    db.queryOne('SELECT COUNT(*) AS count FROM companies'),
+    db.queryOne("SELECT COUNT(*) AS count FROM companies WHERE status = 'active'"),
+    db.queryOne('SELECT COUNT(*) AS count FROM offers'),
+    db.queryOne("SELECT COUNT(*) AS count FROM offers WHERE status = 'active'"),
+    db.queryOne("SELECT COUNT(*) AS count FROM users WHERE role = 'member'")
+  ]);
+
+  return {
+    totalCompanies: Number(totalComp.count),
+    activeCompanies: Number(activeComp.count),
+    totalOffers: Number(totalOffers.count),
+    activeOffers: Number(activeOffers.count),
+    totalMembers: Number(totalMembers.count)
+  };
 };
 
-const createCategory = (data) => {
+const createCategory = async (data) => {
   const db = getDb();
-  const result = db.prepare(`
-    INSERT INTO categories (name, slug, sort_order)
-    VALUES (@name, @slug, @sort_order)
-  `).run({ name: data.name, slug: data.slug, sort_order: data.sort_order ?? 0 });
+  const result = await db.run(
+    'INSERT INTO categories (name, slug, sort_order) VALUES ($1, $2, $3)',
+    [data.name, data.slug, data.sort_order ?? 0]
+  );
   return result.lastInsertRowid;
 };
 

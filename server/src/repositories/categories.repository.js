@@ -1,12 +1,10 @@
 const { getDb } = require('../config/db');
 
-const listCategories = () => {
+const listCategories = async () => {
   const db = getDb();
-  return db.prepare(`
-    SELECT id, name, slug, sort_order
-    FROM categories
-    ORDER BY sort_order ASC, name ASC
-  `).all();
+  return db.query(
+    `SELECT id, name, slug, sort_order FROM categories ORDER BY sort_order ASC, name ASC`
+  );
 };
 
 module.exports = {

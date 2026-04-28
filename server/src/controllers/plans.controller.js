@@ -1,19 +1,19 @@
 const membershipService = require('../services/membership.service');
 
-const list = (req, res, next) => {
+const list = async (req, res, next) => {
   try {
     res.status(200).json({
-      data: membershipService.listAvailablePlans()
+      data: await membershipService.listAvailablePlans()
     });
   } catch (error) {
     next(error);
   }
 };
 
-const me = (req, res, next) => {
+const me = async (req, res, next) => {
   try {
     res.status(200).json({
-      data: membershipService.getMyPlan(req.user.plan.id)
+      data: await membershipService.getMyPlan(req.user.plan.id)
     });
   } catch (error) {
     next(error);

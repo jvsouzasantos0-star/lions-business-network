@@ -25,11 +25,11 @@ const parse = (schema, data) => {
   return result.data;
 };
 
-const list = (req, res, next) => {
+const list = async (req, res, next) => {
   try {
     const filters = parse(listSchema, req.query);
     res.status(200).json({
-      data: companiesService.listCompanies({
+      data: await companiesService.listCompanies({
         category: filters.category,
         search: filters.search,
         featured: filters.featured === 'true'
@@ -40,22 +40,22 @@ const list = (req, res, next) => {
   }
 };
 
-const detailById = (req, res, next) => {
+const detailById = async (req, res, next) => {
   try {
     const { id } = parse(getIdSchema, req.params);
     res.status(200).json({
-      data: companiesService.getCompanyById(id)
+      data: await companiesService.getCompanyById(id)
     });
   } catch (error) {
     next(error);
   }
 };
 
-const detailBySlug = (req, res, next) => {
+const detailBySlug = async (req, res, next) => {
   try {
     const { slug } = parse(getSlugSchema, req.params);
     res.status(200).json({
-      data: companiesService.getCompanyBySlug(slug)
+      data: await companiesService.getCompanyBySlug(slug)
     });
   } catch (error) {
     next(error);

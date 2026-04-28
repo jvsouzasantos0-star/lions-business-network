@@ -1,28 +1,30 @@
 const { getDb } = require('../config/db');
 
-const createSession = ({ user_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent }) => {
+const createSession = async ({ user_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent }) => {
   const db = getDb();
-  db.prepare(`
-    INSERT INTO auth_sessions (user_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent)
-    VALUES (@user_id, @token_jti, @refresh_token_hash, @expires_at, @ip_address, @user_agent)
-  `).run({ user_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent });
+  await db.run(
+    `INSERT INTO auth_sessions (user_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [user_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent]
+  );
 };
 
-const findActiveSessionByJti = (jti) => {
+const findActiveSessionByJti = async (jti) => {
   const db = getDb();
-  return db.prepare(`
-    SELECT *
-    FROM auth_sessions
-    WHERE token_jti = ?
-      AND revoked_at IS NULL
-      AND datetime(expires_at) > datetime('now')
-  `).get(jti);
+  return db.queryOne(
+    `SELECT *
+     FROM auth_sessions
+     WHERE token_jti = $1
+       AND revoked_at IS NULL
+       AND expires_at > NOW()`,
+    [jti]
+  );
 };
 
-const findRefreshSession = (refresh_token_hash) => {
+const findRefreshSession = async (refresh_token_hash) => {
   const db = getDb();
-  return db.prepare(`
-    SELECT
+  return db.queryOne(
+    `SELECT
       s.*,
       u.email,
       u.role,
@@ -39,32 +41,33 @@ const findRefreshSession = (refresh_token_hash) => {
     FROM auth_sessions s
     JOIN users u ON u.id = s.user_id
     JOIN plans p ON p.id = u.plan_id
-    WHERE s.refresh_token_hash = ?
+    WHERE s.refresh_token_hash = $1
       AND s.revoked_at IS NULL
-      AND datetime(s.expires_at) > datetime('now')
-  `).get(refresh_token_hash);
+      AND s.expires_at > NOW()`,
+    [refresh_token_hash]
+  );
 };
 
-const rotateSession = ({ session_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent }) => {
+const rotateSession = async ({ session_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent }) => {
   const db = getDb();
-  db.prepare(`
-    UPDATE auth_sessions
-    SET token_jti = @token_jti,
-        refresh_token_hash = @refresh_token_hash,
-        expires_at = @expires_at,
-        ip_address = @ip_address,
-        user_agent = @user_agent
-    WHERE id = @session_id
-  `).run({ session_id, token_jti, refresh_token_hash, expires_at, ip_address, user_agent });
+  await db.run(
+    `UPDATE auth_sessions
+     SET token_jti = $1,
+         refresh_token_hash = $2,
+         expires_at = $3,
+         ip_address = $4,
+         user_agent = $5
+     WHERE id = $6`,
+    [token_jti, refresh_token_hash, expires_at, ip_address, user_agent, session_id]
+  );
 };
 
-const revokeSessionByJti = (jti) => {
+const revokeSessionByJti = async (jti) => {
   const db = getDb();
-  db.prepare(`
-    UPDATE auth_sessions
-    SET revoked_at = CURRENT_TIMESTAMP
-    WHERE token_jti = ? AND revoked_at IS NULL
-  `).run(jti);
+  await db.run(
+    `UPDATE auth_sessions SET revoked_at = NOW() WHERE token_jti = $1 AND revoked_at IS NULL`,
+    [jti]
+  );
 };
 
 module.exports = {

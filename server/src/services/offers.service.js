@@ -17,12 +17,13 @@ const mapOffer = (row) => ({
   }
 });
 
-const listOffers = (filters) => {
-  return listVisibleOffers(filters).map(mapOffer);
+const listOffers = async (filters) => {
+  const rows = await listVisibleOffers(filters);
+  return rows.map(mapOffer);
 };
 
-const getOfferById = (id) => {
-  const offer = findOfferById(id);
+const getOfferById = async (id) => {
+  const offer = await findOfferById(id);
   if (!offer || !offer.company_id) {
     throw createError(404, 'NOT_FOUND', 'The requested resource was not found.');
   }

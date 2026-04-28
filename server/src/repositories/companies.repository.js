@@ -20,66 +20,70 @@ const baseSelect = `
   JOIN categories cat ON cat.id = c.category_id
 `;
 
-const listCompanies = ({ category, search, featured }) => {
+const listCompanies = async ({ category, search, featured }) => {
   const db = getDb();
   const conditions = ["c.status = 'active'"];
-  const params = {};
+  const params = [];
+  let idx = 1;
 
   if (category) {
-    conditions.push('cat.slug = @category');
-    params.category = category;
+    conditions.push(`cat.slug = $${idx++}`);
+    params.push(category);
   }
 
   if (search) {
-    conditions.push('LOWER(c.name) LIKE @search');
-    params.search = `%${search.toLowerCase()}%`;
+    conditions.push(`LOWER(c.name) LIKE $${idx++}`);
+    params.push(`%${search.toLowerCase()}%`);
   }
 
   if (featured) {
-    conditions.push('(c.is_company_of_week = 1 OR c.featured_order > 0)');
+    conditions.push('(c.is_company_of_week = true OR c.featured_order > 0)');
   }
 
-  return db.prepare(`
-    ${baseSelect}
-    WHERE ${conditions.join(' AND ')}
-    ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
-  `).all(params);
+  return db.query(
+    `${baseSelect}
+     WHERE ${conditions.join(' AND ')}
+     ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC`,
+    params
+  );
 };
 
-const findCompanyById = (id) => {
+const findCompanyById = async (id) => {
   const db = getDb();
-  return db.prepare(`
-    ${baseSelect}
-    WHERE c.id = ? AND c.status = 'active'
-  `).get(id);
+  return db.queryOne(
+    `${baseSelect} WHERE c.id = $1 AND c.status = 'active'`,
+    [id]
+  );
 };
 
-const findCompanyBySlug = (slug) => {
+const findCompanyBySlug = async (slug) => {
   const db = getDb();
-  return db.prepare(`
-    ${baseSelect}
-    WHERE c.slug = ? AND c.status = 'active'
-  `).get(slug);
+  return db.queryOne(
+    `${baseSelect} WHERE c.slug = $1 AND c.status = 'active'`,
+    [slug]
+  );
 };
 
-const getCompanyOfWeek = () => {
+const getCompanyOfWeek = async () => {
   const db = getDb();
-  return db.prepare(`
-    ${baseSelect}
-    WHERE c.status = 'active'
-    ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
-    LIMIT 1
-  `).get();
+  return db.queryOne(
+    `${baseSelect}
+     WHERE c.status = 'active'
+     ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
+     LIMIT 1`,
+    []
+  );
 };
 
-const getFeaturedCompanies = (limit = 4) => {
+const getFeaturedCompanies = async (limit = 4) => {
   const db = getDb();
-  return db.prepare(`
-    ${baseSelect}
-    WHERE c.status = 'active'
-    ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
-    LIMIT ?
-  `).all(limit);
+  return db.query(
+    `${baseSelect}
+     WHERE c.status = 'active'
+     ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
+     LIMIT $1`,
+    [limit]
+  );
 };
 
 module.exports = {

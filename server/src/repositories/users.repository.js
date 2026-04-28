@@ -18,43 +18,33 @@ const mapUserWithPlan = (row) => ({
   }
 });
 
-const findUserByEmail = (email) => {
+const findUserByEmail = async (email) => {
   const db = getDb();
-  return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  return db.queryOne('SELECT * FROM users WHERE email = $1', [email]);
 };
 
-const createUser = ({ full_name, email, password_hash, plan_id, role = 'member', status = 'active' }) => {
+const createUser = async ({ full_name, email, password_hash, plan_id, role = 'member', status = 'active' }) => {
   const db = getDb();
-  const statement = db.prepare(`
-    INSERT INTO users (full_name, email, password_hash, plan_id, role, status)
-    VALUES (@full_name, @email, @password_hash, @plan_id, @role, @status)
-  `);
-  const result = statement.run({ full_name, email, password_hash, plan_id, role, status });
-
-  if (result.lastInsertRowid) {
-    return result.lastInsertRowid;
-  }
-
-  const inserted = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
-  if (!inserted) {
-    throw new Error(`Failed to create user: no row found for email ${email}`);
-  }
-  return inserted.id;
+  const result = await db.run(
+    `INSERT INTO users (full_name, email, password_hash, plan_id, role, status)
+     VALUES ($1, $2, $3, $4, $5, $6)`,
+    [full_name, email, password_hash, plan_id, role, status]
+  );
+  return result.lastInsertRowid;
 };
 
-const updateLastLogin = (id) => {
+const updateLastLogin = async (id) => {
   const db = getDb();
-  db.prepare(`
-    UPDATE users
-    SET last_login_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
-  `).run(id);
+  await db.run(
+    `UPDATE users SET last_login_at = NOW(), updated_at = NOW() WHERE id = $1`,
+    [id]
+  );
 };
 
-const findUserProfileById = (id) => {
+const findUserProfileById = async (id) => {
   const db = getDb();
-  const row = db.prepare(`
-    SELECT
+  const row = await db.queryOne(
+    `SELECT
       u.id,
       u.full_name,
       u.email,
@@ -70,8 +60,9 @@ const findUserProfileById = (id) => {
       p.billing_cycle
     FROM users u
     JOIN plans p ON p.id = u.plan_id
-    WHERE u.id = ?
-  `).get(id);
+    WHERE u.id = $1`,
+    [id]
+  );
 
   return row ? mapUserWithPlan(row) : null;
 };

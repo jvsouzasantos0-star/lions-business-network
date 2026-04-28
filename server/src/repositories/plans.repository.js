@@ -10,20 +10,21 @@ const parsePlan = (row) => ({
   benefits: JSON.parse(row.benefits_json || '[]')
 });
 
-const listPlans = () => {
+const listPlans = async () => {
   const db = getDb();
-  return db.prepare('SELECT * FROM plans ORDER BY price_cents ASC, id ASC').all().map(parsePlan);
+  const rows = await db.query('SELECT * FROM plans ORDER BY price_cents ASC, id ASC');
+  return rows.map(parsePlan);
 };
 
-const findPlanBySlug = (slug) => {
+const findPlanBySlug = async (slug) => {
   const db = getDb();
-  const row = db.prepare('SELECT * FROM plans WHERE slug = ?').get(slug);
+  const row = await db.queryOne('SELECT * FROM plans WHERE slug = $1', [slug]);
   return row ? parsePlan(row) : null;
 };
 
-const findPlanById = (id) => {
+const findPlanById = async (id) => {
   const db = getDb();
-  const row = db.prepare('SELECT * FROM plans WHERE id = ?').get(id);
+  const row = await db.queryOne('SELECT * FROM plans WHERE id = $1', [id]);
   return row ? parsePlan(row) : null;
 };
 

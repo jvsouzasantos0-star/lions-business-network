@@ -3,7 +3,7 @@ const { createError } = require('../utils/errors');
 const { findActiveSessionByJti } = require('../repositories/auth-sessions.repository');
 const { findUserProfileById } = require('../repositories/users.repository');
 
-const authRequired = (req, res, next) => {
+const authRequired = async (req, res, next) => {
   try {
     const header = req.headers.authorization || '';
     if (!header.startsWith('Bearer ')) {
@@ -12,13 +12,13 @@ const authRequired = (req, res, next) => {
 
     const token = header.slice(7);
     const payload = verifyAccessToken(token);
-    const session = findActiveSessionByJti(payload.jti);
+    const session = await findActiveSessionByJti(payload.jti);
 
     if (!session || Number(session.user_id) !== Number(payload.sub)) {
       throw createError(401, 'UNAUTHORIZED', 'Authentication is required.');
     }
 
-    const user = findUserProfileById(Number(payload.sub));
+    const user = await findUserProfileById(Number(payload.sub));
     if (!user || user.status !== 'active') {
       throw createError(401, 'UNAUTHORIZED', 'Authentication is required.');
     }

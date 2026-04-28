@@ -25,60 +25,64 @@ const buildVisibilityConditions = (filters = {}) => {
   const conditions = [
     "o.status = 'active'",
     "c.status = 'active'",
-    "datetime(o.starts_at) <= datetime('now')",
-    "datetime(o.expiry_date) >= datetime('now')"
+    'o.starts_at <= NOW()',
+    'o.expiry_date >= NOW()'
   ];
-  const params = {};
+  const params = [];
+  let idx = 1;
 
   if (filters.company_id) {
-    conditions.push('o.company_id = @company_id');
-    params.company_id = Number(filters.company_id);
+    conditions.push(`o.company_id = $${idx++}`);
+    params.push(Number(filters.company_id));
   }
 
   if (filters.category) {
-    conditions.push('cat.slug = @category');
-    params.category = filters.category;
+    conditions.push(`cat.slug = $${idx++}`);
+    params.push(filters.category);
   }
 
   if (filters.expires_before) {
-    conditions.push('datetime(o.expiry_date) <= datetime(@expires_before)');
-    params.expires_before = filters.expires_before;
+    conditions.push(`o.expiry_date <= $${idx++}`);
+    params.push(filters.expires_before);
   }
 
   return { conditions, params };
 };
 
-const listVisibleOffers = (filters = {}) => {
+const listVisibleOffers = async (filters = {}) => {
   const db = getDb();
   const { conditions, params } = buildVisibilityConditions(filters);
-  return db.prepare(`
-    ${offerSelect}
-    WHERE ${conditions.join(' AND ')}
-    ORDER BY datetime(o.expiry_date) ASC, o.title ASC
-  `).all(params);
+  return db.query(
+    `${offerSelect}
+     WHERE ${conditions.join(' AND ')}
+     ORDER BY o.expiry_date ASC, o.title ASC`,
+    params
+  );
 };
 
-const findOfferById = (id) => {
+const findOfferById = async (id) => {
   const db = getDb();
-  return db.prepare(`
-    ${offerSelect}
-    WHERE o.id = ?
-  `).get(id);
+  return db.queryOne(
+    `${offerSelect} WHERE o.id = $1`,
+    [id]
+  );
 };
 
 const listVisibleOffersByCompany = (companyId) => {
   return listVisibleOffers({ company_id: companyId });
 };
 
-const getLatestVisibleOffers = (limit = 4) => {
+const getLatestVisibleOffers = async (limit = 4) => {
   const db = getDb();
   const { conditions, params } = buildVisibilityConditions({});
-  return db.prepare(`
-    ${offerSelect}
-    WHERE ${conditions.join(' AND ')}
-    ORDER BY datetime(o.created_at) DESC, datetime(o.expiry_date) ASC
-    LIMIT @limit
-  `).all({ ...params, limit });
+  const limitIdx = params.length + 1;
+  return db.query(
+    `${offerSelect}
+     WHERE ${conditions.join(' AND ')}
+     ORDER BY o.created_at DESC, o.expiry_date ASC
+     LIMIT $${limitIdx}`,
+    [...params, limit]
+  );
 };
 
 module.exports = {

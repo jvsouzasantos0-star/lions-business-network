@@ -39,25 +39,26 @@ const mapCompanyOffer = (offer) => ({
   expiry_date: offer.expiry_date
 });
 
-const getCompanyDetail = (company) => {
+const getCompanyDetail = async (company) => {
   if (!company) {
     throw createError(404, 'NOT_FOUND', 'The requested resource was not found.');
   }
 
+  const offers = await listVisibleOffersByCompany(company.id);
   return {
     ...mapCompany(company),
-    offers: listVisibleOffersByCompany(company.id).map(mapCompanyOffer)
+    offers: offers.map(mapCompanyOffer)
   };
 };
 
 module.exports = {
-  listCompanies: (filters) => listCompanies(filters).map(mapCompany),
-  getCompanyById: (id) => getCompanyDetail(findCompanyById(id)),
-  getCompanyBySlug: (slug) => getCompanyDetail(findCompanyBySlug(slug)),
+  listCompanies: async (filters) => (await listCompanies(filters)).map(mapCompany),
+  getCompanyById: async (id) => getCompanyDetail(await findCompanyById(id)),
+  getCompanyBySlug: async (slug) => getCompanyDetail(await findCompanyBySlug(slug)),
   listCategories,
-  getFeaturedCompanies: () => getFeaturedCompanies().map(mapCompany),
-  getCompanyOfWeek: () => {
-    const company = getCompanyOfWeek();
+  getFeaturedCompanies: async () => (await getFeaturedCompanies()).map(mapCompany),
+  getCompanyOfWeek: async () => {
+    const company = await getCompanyOfWeek();
     return company ? mapCompany(company) : null;
   }
 };

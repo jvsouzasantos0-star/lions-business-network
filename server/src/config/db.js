@@ -1,178 +1,71 @@
 const fs = require('fs');
 const path = require('path');
-const initSqlJs = require('sql.js');
+const { Pool } = require('pg');
 const env = require('./env');
 const { seedDatabase } = require('../db/seeds/seed-data');
 
-let dbInstance = null;
-let sqlModulePromise = null;
+let pool = null;
 
-const ensureDatabaseDirectory = () => {
-  const directory = path.dirname(env.sqlitePath);
-  fs.mkdirSync(directory, { recursive: true });
-};
-
-const loadSqlModule = async () => {
-  if (!sqlModulePromise) {
-    sqlModulePromise = initSqlJs({
-      locateFile: (file) => path.resolve(__dirname, '../../node_modules/sql.js/dist', file)
-    });
-  }
-
-  return sqlModulePromise;
-};
-
-const normalizeParams = (params) => {
-  if (params === undefined) {
-    return undefined;
-  }
-
-  if (Array.isArray(params)) {
-    return params;
-  }
-
-  if (params !== null && typeof params === 'object') {
-    return Object.fromEntries(
-      Object.entries(params).map(([key, value]) => [
-        key.startsWith(':') || key.startsWith('@') || key.startsWith('$') ? key : `@${key}`,
-        value
-      ])
-    );
-  }
-
-  return [params];
-};
-
-const readRows = (statement) => {
-  const rows = [];
-
-  while (statement.step()) {
-    rows.push(statement.getAsObject());
-  }
-
-  return rows;
-};
-
-const createStatement = (database, sql) => ({
-  get(params) {
-    const statement = database.prepare(sql);
-
-    try {
-      const normalizedParams = normalizeParams(params);
-      if (normalizedParams !== undefined) {
-        statement.bind(normalizedParams);
-      }
-
-      const rows = readRows(statement);
-      return rows[0];
-    } finally {
-      statement.free();
-    }
-  },
-  all(params) {
-    const statement = database.prepare(sql);
-
-    try {
-      const normalizedParams = normalizeParams(params);
-      if (normalizedParams !== undefined) {
-        statement.bind(normalizedParams);
-      }
-
-      return readRows(statement);
-    } finally {
-      statement.free();
-    }
-  },
-  run(params) {
-    const statement = database.prepare(sql);
-
-    try {
-      const normalizedParams = normalizeParams(params);
-      if (normalizedParams !== undefined) {
-        statement.bind(normalizedParams);
-      }
-
-      statement.step();
-      const lastInsertRowidResult = database.exec('SELECT last_insert_rowid() AS id');
-      database.persist();
-
-      return {
-        lastInsertRowid: lastInsertRowidResult?.[0]?.values?.[0]?.[0] ?? 0
-      };
-    } finally {
-      statement.free();
-    }
-  }
-});
-
-const createDatabaseAdapter = (database) => ({
-  exec(sql) {
-    database.exec(sql);
-    database.persist();
-  },
-  pragma(sql) {
-    try {
-      database.exec(`PRAGMA ${sql}`);
-    } catch (error) {
-      if (!String(error.message || error).includes('Safety level may not be changed')) {
-        throw error;
-      }
-    }
-  },
-  prepare(sql) {
-    return createStatement(database, sql);
-  },
-  transaction(callback) {
-    return (...args) => {
-      try {
-        const result = callback(...args);
-        database.persist();
-        return result;
-      } catch (error) {
-        throw error;
-      }
-    };
-  }
-});
-
-const runMigrations = (db) => {
+const runMigrations = async () => {
   const migrationsDir = path.resolve(__dirname, '../db/migrations');
-  const files = fs.readdirSync(migrationsDir).filter((file) => file.endsWith('.sql')).sort();
+  const files = fs.readdirSync(migrationsDir).filter((f) => f.endsWith('.sql')).sort();
 
   for (const file of files) {
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
-    db.exec(sql);
+    await pool.query(sql);
   }
 };
 
 const initializeDatabase = async () => {
-  if (dbInstance) {
-    return dbInstance;
+  if (pool) {
+    return pool;
   }
 
-  ensureDatabaseDirectory();
-  const SQL = await loadSqlModule();
-  const databaseBuffer = fs.existsSync(env.sqlitePath) ? fs.readFileSync(env.sqlitePath) : undefined;
-  const sqliteDatabase = new SQL.Database(databaseBuffer);
-  sqliteDatabase.persist = () => {
-    const data = sqliteDatabase.export();
-    fs.writeFileSync(env.sqlitePath, Buffer.from(data));
-  };
-  dbInstance = createDatabaseAdapter(sqliteDatabase);
-  dbInstance.pragma('foreign_keys = ON');
-  runMigrations(dbInstance);
-  seedDatabase(dbInstance);
-  sqliteDatabase.persist();
+  pool = new Pool({
+    connectionString: env.databaseUrl,
+    ssl: env.nodeEnv === 'production' ? { rejectUnauthorized: false } : false
+  });
 
-  return dbInstance;
+  await pool.query('SELECT 1');
+  await runMigrations();
+  await seedDatabase(getDb());
+
+  return pool;
 };
 
 const getDb = () => {
-  if (!dbInstance) {
+  if (!pool) {
     throw new Error('Database has not been initialized. Call initializeDatabase() first.');
   }
 
-  return dbInstance;
+  return {
+    async query(sql, params = []) {
+      const result = await pool.query(sql, params);
+      return result.rows;
+    },
+
+    async queryOne(sql, params = []) {
+      const result = await pool.query(sql, params);
+      return result.rows[0] || null;
+    },
+
+    async run(sql, params = []) {
+      let finalSql = sql.trim().replace(/;\s*$/, '');
+      const isInsert = /^INSERT\s/i.test(finalSql);
+      if (isInsert && !/RETURNING/i.test(finalSql)) {
+        finalSql += ' RETURNING id';
+      }
+      const result = await pool.query(finalSql, params);
+      return {
+        lastInsertRowid: result.rows[0]?.id ?? null,
+        changes: result.rowCount
+      };
+    },
+
+    async exec(sql) {
+      await pool.query(sql);
+    }
+  };
 };
 
 module.exports = {

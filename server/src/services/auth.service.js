@@ -44,13 +44,13 @@ const buildTokenPayload = (user, jti) => ({
   jti
 });
 
-const issueSession = ({ user, ipAddress, userAgent, sessionId }) => {
+const issueSession = async ({ user, ipAddress, userAgent, sessionId }) => {
   const accessTokenSeconds = durationToSeconds(process.env.JWT_EXPIRES_IN || '15m');
   const refreshTokenSeconds = durationToSeconds(process.env.REFRESH_TOKEN_EXPIRES_IN || '30d');
   const identifiers = createSessionIdentifiers();
 
   if (sessionId) {
-    rotateSession({
+    await rotateSession({
       session_id: sessionId,
       token_jti: identifiers.jti,
       refresh_token_hash: hashToken(identifiers.refreshToken),
@@ -59,7 +59,7 @@ const issueSession = ({ user, ipAddress, userAgent, sessionId }) => {
       user_agent: userAgent
     });
   } else {
-    createSession({
+    await createSession({
       user_id: user.id,
       token_jti: identifiers.jti,
       refresh_token_hash: hashToken(identifiers.refreshToken),
@@ -80,18 +80,18 @@ const issueSession = ({ user, ipAddress, userAgent, sessionId }) => {
 
 const register = async ({ full_name, email, password }, context) => {
   const normalizedEmail = email.trim().toLowerCase();
-  const existingUser = findUserByEmail(normalizedEmail);
+  const existingUser = await findUserByEmail(normalizedEmail);
 
   if (existingUser) {
     throw createError(409, 'CONFLICT', 'A user with this email already exists.');
   }
 
-  const plan = findPlanBySlug('member');
+  const plan = await findPlanBySlug('member');
   if (!plan) {
     throw createError(500, 'INTERNAL_ERROR', 'Default plan not found.');
   }
 
-  const userId = createUser({
+  const userId = await createUser({
     full_name: full_name.trim(),
     email: normalizedEmail,
     password_hash: await hashPassword(password),
@@ -102,14 +102,14 @@ const register = async ({ full_name, email, password }, context) => {
     throw createError(500, 'INTERNAL_ERROR', 'User creation failed. Please try again.');
   }
 
-  updateLastLogin(userId);
-  const user = findUserProfileById(userId);
+  await updateLastLogin(userId);
+  const user = await findUserProfileById(userId);
 
   if (!user) {
     throw createError(500, 'INTERNAL_ERROR', 'User profile could not be loaded after creation.');
   }
 
-  const tokens = issueSession({ user, ...context });
+  const tokens = await issueSession({ user, ...context });
 
   return {
     user: toAuthUser(user),
@@ -119,7 +119,7 @@ const register = async ({ full_name, email, password }, context) => {
 
 const login = async ({ email, password }, context) => {
   const normalizedEmail = email.trim().toLowerCase();
-  const userRecord = findUserByEmail(normalizedEmail);
+  const userRecord = await findUserByEmail(normalizedEmail);
 
   if (!userRecord) {
     throw createError(401, 'UNAUTHORIZED', 'Invalid email or password.');
@@ -130,14 +130,14 @@ const login = async ({ email, password }, context) => {
     throw createError(401, 'UNAUTHORIZED', 'Invalid email or password.');
   }
 
-  const user = findUserProfileById(userRecord.id);
+  const user = await findUserProfileById(userRecord.id);
   if (!user || user.status !== 'active') {
     throw createError(403, 'FORBIDDEN', 'Your account is not active.');
   }
 
-  updateLastLogin(user.id);
-  const freshUser = findUserProfileById(user.id);
-  const tokens = issueSession({ user: freshUser, ...context });
+  await updateLastLogin(user.id);
+  const freshUser = await findUserProfileById(user.id);
+  const tokens = await issueSession({ user: freshUser, ...context });
 
   return {
     user: toAuthUser(freshUser),
@@ -146,7 +146,7 @@ const login = async ({ email, password }, context) => {
 };
 
 const refresh = async ({ refresh_token }, context) => {
-  const session = findRefreshSession(hashToken(refresh_token));
+  const session = await findRefreshSession(hashToken(refresh_token));
   if (!session) {
     throw createError(401, 'UNAUTHORIZED', 'Refresh token is invalid or expired.');
   }
@@ -181,12 +181,12 @@ const refresh = async ({ refresh_token }, context) => {
 };
 
 const logout = async ({ jti }) => {
-  revokeSessionByJti(jti);
+  await revokeSessionByJti(jti);
   return { message: 'Logout successful.' };
 };
 
 const getCurrentUser = async (userId) => {
-  const user = findUserProfileById(userId);
+  const user = await findUserProfileById(userId);
   if (!user) {
     throw createError(401, 'UNAUTHORIZED', 'Authentication is required.');
   }

@@ -2,12 +2,12 @@ const { listVisibleContent, findContentBySlug } = require('../repositories/membe
 const { listPlans, findPlanById } = require('../repositories/plans.repository');
 const { createError } = require('../utils/errors');
 
-const listMemberContent = () => {
+const listMemberContent = async () => {
   return listVisibleContent();
 };
 
-const getMemberContent = (slug) => {
-  const content = findContentBySlug(slug);
+const getMemberContent = async (slug) => {
+  const content = await findContentBySlug(slug);
   if (!content || !content.is_active) {
     throw createError(404, 'NOT_FOUND', 'The requested resource was not found.');
   }
@@ -23,8 +23,8 @@ const getMemberContent = (slug) => {
   };
 };
 
-const getMyPlan = (planId) => {
-  const plan = findPlanById(planId);
+const getMyPlan = async (planId) => {
+  const plan = await findPlanById(planId);
   if (!plan) {
     throw createError(404, 'NOT_FOUND', 'The requested resource was not found.');
   }
@@ -32,7 +32,7 @@ const getMyPlan = (planId) => {
   return { plan };
 };
 
-const listAvailablePlans = () => {
+const listAvailablePlans = async () => {
   return listPlans();
 };
 

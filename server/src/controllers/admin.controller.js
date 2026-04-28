@@ -31,32 +31,32 @@ const companyBodySchema = z.object({
 
 // ── Company handlers ─────────────────────────────────────────────────────────
 
-const listAdminCompanies = (req, res, next) => {
+const listAdminCompanies = async (req, res, next) => {
   try {
-    res.status(200).json({ data: adminRepo.listAllCompanies() });
+    res.status(200).json({ data: await adminRepo.listAllCompanies() });
   } catch (error) {
     next(error);
   }
 };
 
-const createCompany = (req, res, next) => {
+const createCompany = async (req, res, next) => {
   try {
     const data = parse(companyBodySchema, req.body);
     const baseSlug = slugify(data.name);
-    const existing = adminRepo.findCompanyBySlugAdmin(baseSlug);
+    const existing = await adminRepo.findCompanyBySlugAdmin(baseSlug);
     const slug = existing ? `${baseSlug}-${Date.now()}` : baseSlug;
-    const id = adminRepo.createCompany({ ...data, slug });
-    const company = adminRepo.findCompanyByIdAdmin(id);
+    const id = await adminRepo.createCompany({ ...data, slug });
+    const company = await adminRepo.findCompanyByIdAdmin(id);
     res.status(201).json({ data: company });
   } catch (error) {
     next(error);
   }
 };
 
-const getCompany = (req, res, next) => {
+const getCompany = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
-    const company = adminRepo.findCompanyByIdAdmin(id);
+    const company = await adminRepo.findCompanyByIdAdmin(id);
     if (!company) throw createError(404, 'NOT_FOUND', 'Company not found.');
     res.status(200).json({ data: company });
   } catch (error) {
@@ -64,26 +64,26 @@ const getCompany = (req, res, next) => {
   }
 };
 
-const updateCompany = (req, res, next) => {
+const updateCompany = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
-    const existing = adminRepo.findCompanyByIdAdmin(id);
+    const existing = await adminRepo.findCompanyByIdAdmin(id);
     if (!existing) throw createError(404, 'NOT_FOUND', 'Company not found.');
     const data = parse(companyBodySchema, req.body);
-    adminRepo.updateCompany(id, data);
-    const updated = adminRepo.findCompanyByIdAdmin(id);
+    await adminRepo.updateCompany(id, data);
+    const updated = await adminRepo.findCompanyByIdAdmin(id);
     res.status(200).json({ data: updated });
   } catch (error) {
     next(error);
   }
 };
 
-const deleteCompany = (req, res, next) => {
+const deleteCompany = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
-    const existing = adminRepo.findCompanyByIdAdmin(id);
+    const existing = await adminRepo.findCompanyByIdAdmin(id);
     if (!existing) throw createError(404, 'NOT_FOUND', 'Company not found.');
-    adminRepo.deleteCompany(id);
+    await adminRepo.deleteCompany(id);
     res.status(200).json({ data: { message: 'Company deleted.' } });
   } catch (error) {
     next(error);
@@ -106,34 +106,34 @@ const todayStr = () => new Date().toISOString().slice(0, 10);
 
 // ── Offer handlers ────────────────────────────────────────────────────────────
 
-const listAdminOffers = (req, res, next) => {
+const listAdminOffers = async (req, res, next) => {
   try {
-    res.status(200).json({ data: adminRepo.listAllOffers() });
+    res.status(200).json({ data: await adminRepo.listAllOffers() });
   } catch (error) {
     next(error);
   }
 };
 
-const createOffer = (req, res, next) => {
+const createOffer = async (req, res, next) => {
   try {
     const data = parse(offerBodySchema, req.body);
     const { expires_at, starts_at, ...rest } = data;
-    const id = adminRepo.createOffer({
+    const id = await adminRepo.createOffer({
       ...rest,
       starts_at: starts_at || todayStr(),
       expiry_date: expires_at || todayStr()
     });
-    const offer = adminRepo.findOfferByIdAdmin(id);
+    const offer = await adminRepo.findOfferByIdAdmin(id);
     res.status(201).json({ data: offer });
   } catch (error) {
     next(error);
   }
 };
 
-const getOffer = (req, res, next) => {
+const getOffer = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
-    const offer = adminRepo.findOfferByIdAdmin(id);
+    const offer = await adminRepo.findOfferByIdAdmin(id);
     if (!offer) throw createError(404, 'NOT_FOUND', 'Offer not found.');
     res.status(200).json({ data: offer });
   } catch (error) {
@@ -141,31 +141,31 @@ const getOffer = (req, res, next) => {
   }
 };
 
-const updateOffer = (req, res, next) => {
+const updateOffer = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
-    const existing = adminRepo.findOfferByIdAdmin(id);
+    const existing = await adminRepo.findOfferByIdAdmin(id);
     if (!existing) throw createError(404, 'NOT_FOUND', 'Offer not found.');
     const data = parse(offerBodySchema, req.body);
     const { expires_at, starts_at, ...rest } = data;
-    adminRepo.updateOffer(id, {
+    await adminRepo.updateOffer(id, {
       ...rest,
       starts_at: starts_at || existing.starts_at || todayStr(),
       expiry_date: expires_at || existing.expiry_date || todayStr()
     });
-    const updated = adminRepo.findOfferByIdAdmin(id);
+    const updated = await adminRepo.findOfferByIdAdmin(id);
     res.status(200).json({ data: updated });
   } catch (error) {
     next(error);
   }
 };
 
-const deleteOffer = (req, res, next) => {
+const deleteOffer = async (req, res, next) => {
   try {
     const { id } = parse(idSchema, req.params);
-    const existing = adminRepo.findOfferByIdAdmin(id);
+    const existing = await adminRepo.findOfferByIdAdmin(id);
     if (!existing) throw createError(404, 'NOT_FOUND', 'Offer not found.');
-    adminRepo.deleteOffer(id);
+    await adminRepo.deleteOffer(id);
     res.status(200).json({ data: { message: 'Offer deleted.' } });
   } catch (error) {
     next(error);
@@ -174,9 +174,9 @@ const deleteOffer = (req, res, next) => {
 
 // ── Stats handler ─────────────────────────────────────────────────────────────
 
-const getStats = (req, res, next) => {
+const getStats = async (req, res, next) => {
   try {
-    res.status(200).json({ data: adminRepo.getStats() });
+    res.status(200).json({ data: await adminRepo.getStats() });
   } catch (error) {
     next(error);
   }
@@ -184,9 +184,9 @@ const getStats = (req, res, next) => {
 
 // ── Category handlers ─────────────────────────────────────────────────────────
 
-const listAdminCategories = (req, res, next) => {
+const listAdminCategories = async (req, res, next) => {
   try {
-    res.status(200).json({ data: listCategories() });
+    res.status(200).json({ data: await listCategories() });
   } catch (error) {
     next(error);
   }
@@ -197,12 +197,12 @@ const categoryBodySchema = z.object({
   sort_order: z.coerce.number().int().optional().default(0)
 });
 
-const createCategory = (req, res, next) => {
+const createCategory = async (req, res, next) => {
   try {
     const data = parse(categoryBodySchema, req.body);
     const slug = slugify(data.name);
-    const id = adminRepo.createCategory({ name: data.name, slug, sort_order: data.sort_order });
-    const all = listCategories();
+    const id = await adminRepo.createCategory({ name: data.name, slug, sort_order: data.sort_order });
+    const all = await listCategories();
     const category = all.find((c) => c.id === Number(id));
     res.status(201).json({ data: category });
   } catch (error) {

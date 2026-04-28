@@ -18,19 +18,27 @@ const mapDashboardOffer = (offer) => ({
   }
 });
 
-const getDashboard = (user) => {
+const getDashboard = async (user) => {
   const firstName = user.full_name.split(' ')[0];
+
+  const [companyOfWeek, featuredCompanies, latestOffers, memberHighlights, categories] = await Promise.all([
+    companiesService.getCompanyOfWeek(),
+    companiesService.getFeaturedCompanies(),
+    getLatestVisibleOffers(),
+    listMemberHighlights(),
+    companiesService.listCategories()
+  ]);
 
   return {
     user: {
       first_name: firstName,
       plan_slug: user.plan.slug
     },
-    company_of_the_week: companiesService.getCompanyOfWeek(),
-    featured_companies: companiesService.getFeaturedCompanies(),
-    latest_offers: getLatestVisibleOffers().map(mapDashboardOffer),
-    member_highlights: listMemberHighlights(),
-    categories: companiesService.listCategories(),
+    company_of_the_week: companyOfWeek,
+    featured_companies: featuredCompanies,
+    latest_offers: latestOffers.map(mapDashboardOffer),
+    member_highlights: memberHighlights,
+    categories,
     membership_summary: {
       plan_name: user.plan.name,
       benefits_count: user.plan.benefits.length
