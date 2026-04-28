@@ -22,7 +22,7 @@ const baseSelect = `
 
 const listCompanies = ({ category, search, featured }) => {
   const db = getDb();
-  const conditions = ['c.is_active = 1'];
+  const conditions = ["c.status = 'active'"];
   const params = {};
 
   if (category) {
@@ -50,7 +50,7 @@ const findCompanyById = (id) => {
   const db = getDb();
   return db.prepare(`
     ${baseSelect}
-    WHERE c.id = ? AND c.is_active = 1
+    WHERE c.id = ? AND c.status = 'active'
   `).get(id);
 };
 
@@ -58,7 +58,7 @@ const findCompanyBySlug = (slug) => {
   const db = getDb();
   return db.prepare(`
     ${baseSelect}
-    WHERE c.slug = ? AND c.is_active = 1
+    WHERE c.slug = ? AND c.status = 'active'
   `).get(slug);
 };
 
@@ -66,7 +66,7 @@ const getCompanyOfWeek = () => {
   const db = getDb();
   return db.prepare(`
     ${baseSelect}
-    WHERE c.is_active = 1
+    WHERE c.status = 'active'
     ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
     LIMIT 1
   `).get();
@@ -76,7 +76,7 @@ const getFeaturedCompanies = (limit = 4) => {
   const db = getDb();
   return db.prepare(`
     ${baseSelect}
-    WHERE c.is_active = 1
+    WHERE c.status = 'active'
     ORDER BY c.is_company_of_week DESC, c.featured_order ASC, c.name ASC
     LIMIT ?
   `).all(limit);

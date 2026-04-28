@@ -57,13 +57,13 @@ const init = async () => {
     return;
   }
 
-  renderBottomNav(document.querySelector('#bottom-nav'), 'offers');
-
   try {
     const [user, categories] = await Promise.all([
       auth.ensureCurrentUser(),
       request('/categories', { auth: true })
     ]);
+
+    renderBottomNav(document.querySelector('#bottom-nav'), 'offers', { isAdmin: user?.role === 'admin' });
 
     renderTopbar(document.querySelector('#topbar'), {
       user,

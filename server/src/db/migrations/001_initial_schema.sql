@@ -50,6 +50,9 @@ CREATE TABLE IF NOT EXISTS companies (
     is_company_of_week INTEGER NOT NULL DEFAULT 0 CHECK (is_company_of_week IN (0, 1)),
     is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
     featured_order INTEGER DEFAULT 0,
+    address TEXT,
+    instagram TEXT,
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -68,6 +71,7 @@ CREATE TABLE IF NOT EXISTS offers (
     expiry_date TEXT NOT NULL,
     is_premium_only INTEGER NOT NULL DEFAULT 0 CHECK (is_premium_only IN (0, 1)),
     is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+    status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (company_id) REFERENCES companies(id)

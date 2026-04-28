@@ -73,13 +73,13 @@ const init = async () => {
     return;
   }
 
-  renderBottomNav(document.querySelector('#bottom-nav'), 'plan');
-
   try {
     const [user, planData] = await Promise.all([
       auth.ensureCurrentUser(),
       request('/plans/me', { auth: true })
     ]);
+
+    renderBottomNav(document.querySelector('#bottom-nav'), 'plan', { isAdmin: user?.role === 'admin' });
 
     renderTopbar(document.querySelector('#topbar'), {
       user,

@@ -23,8 +23,8 @@ const offerSelect = `
 
 const buildVisibilityConditions = (filters = {}) => {
   const conditions = [
-    'o.is_active = 1',
-    'c.is_active = 1',
+    "o.status = 'active'",
+    "c.status = 'active'",
     "datetime(o.starts_at) <= datetime('now')",
     "datetime(o.expiry_date) >= datetime('now')"
   ];

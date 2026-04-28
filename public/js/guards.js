@@ -17,3 +17,18 @@ export const redirectIfAuthenticated = () => {
 
   return false;
 };
+
+export const requireAdmin = async () => {
+  if (!auth.isAuthenticated()) {
+    window.location.replace('/login.html');
+    return false;
+  }
+
+  const user = await auth.ensureCurrentUser();
+  if (!user || user.role !== 'admin') {
+    window.location.replace('/index.html');
+    return false;
+  }
+
+  return true;
+};

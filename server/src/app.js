@@ -11,6 +11,7 @@ const offersRoutes = require('./routes/offers.routes');
 const memberContentRoutes = require('./routes/member-content.routes');
 const plansRoutes = require('./routes/plans.routes');
 const metaRoutes = require('./routes/meta.routes');
+const adminRoutes = require('./routes/admin.routes');
 const { publicLimiter, authReadLimiter } = require('./middlewares/rate-limit');
 const { notFound } = require('./middlewares/not-found');
 const { errorHandler } = require('./middlewares/error-handler');
@@ -40,6 +41,7 @@ app.use('/api/categories', authReadLimiter, categoriesRoutes);
 app.use('/api/offers', authReadLimiter, offersRoutes);
 app.use('/api/member-content', authReadLimiter, memberContentRoutes);
 app.use('/api/plans', plansRoutes);
+app.use('/api/admin', authReadLimiter, adminRoutes);
 
 app.use(express.static(env.publicDir, { extensions: ['html'] }));
 app.get('/', (req, res) => {

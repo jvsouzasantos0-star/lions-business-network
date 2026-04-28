@@ -29,7 +29,7 @@ const getOfferById = (id) => {
 
   const hasStarted = new Date(offer.starts_at).getTime() <= Date.now();
   const isExpired = new Date(offer.expiry_date).getTime() < Date.now();
-  if (offer.is_active === 0 || !hasStarted || isExpired) {
+  if (offer.status !== 'active' || !hasStarted || isExpired) {
     throw createError(404, 'NOT_FOUND', 'The requested resource was not found.');
   }
 

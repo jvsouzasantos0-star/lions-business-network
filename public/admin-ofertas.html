@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Ofertas | Admin Lions</title>
+  <link rel="icon" type="image/png" href="/img/hero-lion.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="ambient-orb ambient-orb--left"></div>
+  <div class="ambient-orb ambient-orb--right"></div>
+  <main class="screen app-shell">
+    <header id="admin-topbar"></header>
+    <main class="page-stack">
+      <section class="page-head">
+        <div>
+          <h1 class="page-title">Ofertas</h1>
+          <p class="page-subtitle">Gerencie todas as ofertas e promoções da rede.</p>
+        </div>
+        <a class="button" href="/admin-oferta-form.html">+ Adicionar</a>
+      </section>
+
+      <section id="offers-list" class="admin-list">
+        <div class="loading-state glass-card">Carregando ofertas...</div>
+      </section>
+    </main>
+    <nav id="admin-nav" class="bottom-nav" aria-label="Navegação admin"></nav>
+  </main>
+  <div id="confirm-modal" class="confirm-overlay hidden"></div>
+  <script type="module" src="/js/pages/admin-offers.js"></script>
+</body>
+</html>

@@ -47,8 +47,6 @@ const init = async () => {
     return;
   }
 
-  renderBottomNav(document.querySelector('#bottom-nav'), 'companies');
-
   const params = new URLSearchParams(window.location.search);
   const companyId = params.get('id');
 
@@ -64,6 +62,8 @@ const init = async () => {
       request(`/companies/${companyId}`, { auth: true }),
       request(`/offers?company_id=${companyId}`, { auth: true })
     ]);
+
+    renderBottomNav(document.querySelector('#bottom-nav'), 'companies', { isAdmin: user?.role === 'admin' });
 
     renderTopbar(document.querySelector('#topbar'), {
       user,

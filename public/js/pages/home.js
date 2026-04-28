@@ -122,13 +122,13 @@ const init = async () => {
     return;
   }
 
-  renderBottomNav(document.querySelector('#bottom-nav'), 'home');
-
   try {
     const [user, dashboard] = await Promise.all([
       auth.ensureCurrentUser(),
       request('/dashboard', { auth: true })
     ]);
+
+    renderBottomNav(document.querySelector('#bottom-nav'), 'home', { isAdmin: user?.role === 'admin' });
 
     renderTopbar(document.querySelector('#topbar'), {
       user,

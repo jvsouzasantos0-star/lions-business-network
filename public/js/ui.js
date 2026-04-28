@@ -81,14 +81,23 @@ export const setStatus = (element, message = '', type = '') => {
   }
 };
 
-export const renderBottomNav = (container, activeKey) => {
+const adminNavItem = {
+  key: 'admin',
+  href: '/admin.html',
+  label: 'Admin',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+};
+
+export const renderBottomNav = (container, activeKey, { isAdmin = false } = {}) => {
   if (!container) {
     return;
   }
 
+  const items = isAdmin ? [...navItems, adminNavItem] : navItems;
+
   container.innerHTML = `
-    <div class="bottom-nav__grid">
-      ${navItems.map((item) => `
+    <div class="bottom-nav__grid" style="${isAdmin ? 'grid-template-columns: repeat(5, minmax(0, 1fr));' : ''}">
+      ${items.map((item) => `
         <a class="bottom-nav__link ${item.key === activeKey ? 'is-active' : ''}" href="${item.href}">
           ${item.icon}
           <span>${item.label}</span>

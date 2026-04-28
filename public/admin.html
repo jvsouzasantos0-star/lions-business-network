@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Admin | Lions Business Network</title>
+  <link rel="icon" type="image/png" href="/img/hero-lion.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="ambient-orb ambient-orb--left"></div>
+  <div class="ambient-orb ambient-orb--right"></div>
+  <main class="screen app-shell">
+    <header id="admin-topbar"></header>
+    <main id="admin-page" class="page-stack">
+      <section>
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Painel Admin</h1>
+            <p class="page-subtitle">Visão geral da plataforma Lions Business Network.</p>
+          </div>
+        </div>
+        <div id="stats-grid" class="admin-stats-grid">
+          <div class="admin-stat-card loading-state">Carregando...</div>
+        </div>
+      </section>
+
+      <section class="glass-card form-section">
+        <p class="form-section__title">Ações rápidas</p>
+        <div class="admin-quick-actions">
+          <a class="button" href="/admin-empresa-form.html">+ Adicionar Empresa</a>
+          <a class="button button--ghost" href="/admin-oferta-form.html">+ Adicionar Oferta</a>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Empresas recentes</h2>
+          </div>
+          <a class="tag" href="/admin-empresas.html">Ver todas</a>
+        </div>
+        <div id="recent-companies" class="admin-recent-list">
+          <div class="loading-state">Carregando...</div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Ofertas recentes</h2>
+          </div>
+          <a class="tag" href="/admin-ofertas.html">Ver todas</a>
+        </div>
+        <div id="recent-offers" class="admin-recent-list">
+          <div class="loading-state">Carregando...</div>
+        </div>
+      </section>
+    </main>
+    <nav id="admin-nav" class="bottom-nav" aria-label="Navegação admin"></nav>
+  </main>
+  <script type="module" src="/js/pages/admin-dashboard.js"></script>
+</body>
+</html>

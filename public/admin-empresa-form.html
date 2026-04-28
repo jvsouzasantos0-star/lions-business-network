@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Empresa | Admin Lions</title>
+  <link rel="icon" type="image/png" href="/img/hero-lion.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="ambient-orb ambient-orb--left"></div>
+  <div class="ambient-orb ambient-orb--right"></div>
+  <main class="screen app-shell">
+    <header id="admin-topbar"></header>
+    <main class="page-stack">
+      <section class="page-head">
+        <div>
+          <h1 id="form-title" class="page-title">Nova Empresa</h1>
+          <p class="page-subtitle">Preencha os dados da empresa parceira.</p>
+        </div>
+        <a class="button button--ghost" href="/admin-empresas.html">Voltar</a>
+      </section>
+
+      <div id="status-msg" class="status"></div>
+
+      <form id="company-form" class="page-stack" novalidate>
+        <div class="glass-card form-section">
+          <p class="form-section__title">Informações básicas</p>
+          <div class="admin-form">
+            <div class="field">
+              <label class="field-label" for="f-name">Nome da empresa *</label>
+              <input id="f-name" class="field-input" type="text" placeholder="Ex: Lions Tech" required>
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-category">Categoria *</label>
+              <select id="f-category" class="field-select" required>
+                <option value="">Carregando categorias...</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-description">Descrição</label>
+              <textarea id="f-description" class="field-textarea" placeholder="Descreva a empresa..."></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-discount">Desconto (%) *</label>
+              <input id="f-discount" class="field-input" type="number" min="0" max="100" placeholder="Ex: 15" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card form-section">
+          <p class="form-section__title">Contato</p>
+          <div class="admin-form admin-form-grid">
+            <div class="field">
+              <label class="field-label" for="f-phone">Telefone</label>
+              <input id="f-phone" class="field-input" type="tel" placeholder="(11) 99999-9999">
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-whatsapp">WhatsApp</label>
+              <input id="f-whatsapp" class="field-input" type="tel" placeholder="5511999999999">
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-instagram">Instagram</label>
+              <input id="f-instagram" class="field-input" type="text" placeholder="@empresa">
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-address">Endereço</label>
+              <input id="f-address" class="field-input" type="text" placeholder="Rua, número, cidade">
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card form-section">
+          <p class="form-section__title">Mídia e status</p>
+          <div class="admin-form">
+            <div class="field">
+              <label class="field-label" for="f-logo">URL do logo</label>
+              <input id="f-logo" class="field-input" type="url" placeholder="https://...">
+            </div>
+            <div class="toggle-field">
+              <span class="toggle-label">Empresa ativa</span>
+              <label class="toggle-switch">
+                <input id="f-status" type="checkbox" checked>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="btn-save" class="button" type="submit">Salvar empresa</button>
+          <button id="btn-delete" class="button button--danger hidden" type="button">Excluir empresa</button>
+        </div>
+      </form>
+    </main>
+    <nav id="admin-nav" class="bottom-nav" aria-label="Navegação admin"></nav>
+  </main>
+  <div id="confirm-modal" class="confirm-overlay hidden"></div>
+  <script type="module" src="/js/pages/admin-company-form.js"></script>
+</body>
+</html>
