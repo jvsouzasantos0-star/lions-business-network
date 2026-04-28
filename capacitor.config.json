@@ -1,0 +1,8 @@
+{
+  "appId": "com.lionsbusiness.network",
+  "appName": "Lions Business Network",
+  "webDir": "public",
+  "server": {
+    "androidScheme": "https"
+  }
+}

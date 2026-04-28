@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: lions-business-network
+    runtime: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && node src/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3000

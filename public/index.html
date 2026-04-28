@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lions Network">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Lions Business Network</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/img/hero-lion.png">
+  <link rel="apple-touch-icon" href="/img/hero-lion.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="ambient-orb ambient-orb--left"></div>
+  <div class="ambient-orb ambient-orb--right"></div>
+  <main class="screen app-shell">
+    <header id="topbar" class="topbar"></header>
+    <main id="dashboard-page" class="page-stack">
+      <section id="dashboard-hero" class="loading-state glass-card">Carregando dashboard...</section>
+      <section>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Empresas em destaque</h2>
+            <p class="section-subtitle">Descubra parceiros estratégicos e filtros por categoria.</p>
+          </div>
+          <a class="tag" href="/empresas.html">Ver diretório completo</a>
+        </div>
+        <div id="dashboard-categories" class="chip-row filters"></div>
+        <div id="dashboard-companies" class="card-grid"></div>
+      </section>
+      <section>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Ofertas ativas</h2>
+            <p class="section-subtitle">Promoções em andamento para gerar negócios agora.</p>
+          </div>
+          <a class="tag" href="/ofertas.html">Ver ofertas</a>
+        </div>
+        <div id="dashboard-offers" class="offers-grid"></div>
+      </section>
+      <section>
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Conteúdo exclusivo</h2>
+            <p class="section-subtitle">Insights e highlights liberados conforme seu plano.</p>
+          </div>
+        </div>
+        <div id="dashboard-content" class="content-grid"></div>
+      </section>
+    </main>
+    <nav id="bottom-nav" class="bottom-nav" aria-label="Navegação principal"></nav>
+  </main>
+  <script type="module" src="/js/pwa.js"></script>
+  <script type="module" src="/js/pages/home.js"></script>
+</body>
+</html>

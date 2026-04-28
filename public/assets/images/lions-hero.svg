@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+  <rect width="600" height="360" rx="36" fill="#0d0d0d"/>
+  <circle cx="180" cy="180" r="88" fill="#00ff66" opacity="0.9"/>
+  <text x="180" y="205" text-anchor="middle" font-size="110" font-family="Arial" fill="#000">L</text>
+  <text x="310" y="155" font-size="34" font-family="Arial" fill="#ffffff">Lions Business</text>
+  <text x="310" y="205" font-size="34" font-family="Arial" fill="#00ff66">Network</text>
+</svg>

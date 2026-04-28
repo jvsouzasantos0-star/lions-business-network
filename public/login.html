@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lions Network">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <title>Login | Lions Business Network</title>
+  <link rel="icon" type="image/png" href="/img/hero-lion.png">
+  <link rel="apple-touch-icon" href="/img/hero-lion.png">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="ambient-orb ambient-orb--left"></div>
+  <div class="ambient-orb ambient-orb--right"></div>
+  <div class="ambient-orb ambient-orb--bottom"></div>
+  <main class="screen screen--auth">
+    <section class="auth-layout">
+      <article class="glass-card auth-panel">
+        <div class="brand">
+          <p class="eyebrow">Premium networking platform</p>
+          <h1 class="brand-title">Lions Business Network</h1>
+          <p class="brand-subtitle">Conectando empresarios. Gerando negocios.</p>
+          <p class="helper-text">Uma experiência exclusiva para empresários que buscam parcerias estratégicas, vantagens reais e presença premium dentro da rede.</p>
+        </div>
+      </article>
+      <article class="glass-card glass-card--glow auth-panel">
+        <div class="brand brand--center">
+          <div class="brand-badge">
+            <img src="/img/hero-lion.png" alt="Lions Business Network">
+          </div>
+          <div>
+            <p class="eyebrow">Acesso do associado</p>
+            <h2 class="section-title">Entrar na rede</h2>
+          </div>
+        </div>
+        <form id="login-form" class="auth-form">
+          <label class="field">
+            <span class="field-label">Email</span>
+            <input class="field-input" name="email" type="email" placeholder="marina@lionsnetwork.com" autocomplete="email" required>
+          </label>
+          <label class="field">
+            <span class="field-label">Senha</span>
+            <input class="field-input" name="password" type="password" placeholder="StrongPass123!" autocomplete="current-password" required minlength="8">
+          </label>
+          <button class="button" type="submit">Entrar</button>
+          <p id="login-status" class="status" aria-live="polite"></p>
+        </form>
+        <div class="auth-footer">
+          <span class="muted">Novo por aqui?</span>
+          <a class="auth-link" href="/cadastro.html">Criar conta</a>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script type="module" src="/js/pwa.js"></script>
+  <script type="module" src="/js/pages/login.js"></script>
+</body>
+</html>
