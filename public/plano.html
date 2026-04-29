@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#070a08">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Lions Network">
@@ -16,32 +16,26 @@
 </head>
 <body>
   <div class="ambient-orb ambient-orb--left"></div>
-  <div class="ambient-orb ambient-orb--right"></div>
   <main class="screen app-shell">
     <header id="topbar" class="topbar"></header>
     <main class="page-stack">
       <section class="page-head">
         <div>
-          <h1 class="page-title">Meu plano</h1>
-          <p class="page-subtitle">Acompanhe seus dados, benefícios ativos e áreas liberadas na plataforma.</p>
+          <h1 class="page-title">Meu Plano</h1>
+          <p class="page-subtitle">Seus dados, benefícios e áreas liberadas.</p>
         </div>
       </section>
       <section class="info-grid">
-        <article id="profile-card" class="glass-card profile-card loading-state">Carregando perfil...</article>
-        <article id="plan-card" class="glass-card plan-card loading-state">Carregando plano...</article>
+        <article id="profile-card" class="glass-card profile-card loading-state">Carregando...</article>
+        <article id="plan-card" class="glass-card plan-card loading-state">Carregando...</article>
       </section>
       <section class="glass-card section-card">
         <div class="section-head">
-          <div>
-            <h2 class="section-title">Benefícios inclusos</h2>
-            <p class="section-subtitle">Tudo o que está disponível na sua associação.</p>
-          </div>
+          <h2 class="section-title">Benefícios</h2>
         </div>
         <div id="plan-benefits" class="plan-benefits"></div>
         <div id="available-sections"></div>
-        <div class="button-row">
-          <button id="logout-button" class="button button--danger" type="button">Sair da conta</button>
-        </div>
+        <button id="logout-button" class="button button--danger button--full" type="button">Sair da conta</button>
         <p id="plan-status" class="status" aria-live="polite"></p>
       </section>
     </main>

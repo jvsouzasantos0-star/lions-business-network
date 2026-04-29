@@ -21,5 +21,8 @@ module.exports = {
   loginLimiter: buildLimiter(15 * 60 * 1000, 50),
   refreshLimiter: buildLimiter(15 * 60 * 1000, 50),
   publicLimiter: buildLimiter(60 * 1000, 120),
-  authReadLimiter: buildLimiter(60 * 1000, 300)
+  authReadLimiter: buildLimiter(60 * 1000, 300),
+  forgotPasswordLimiter: buildLimiter(15 * 60 * 1000, 10),
+  verifyResetCodeLimiter: buildLimiter(15 * 60 * 1000, 10),
+  resetPasswordLimiter: buildLimiter(15 * 60 * 1000, 5)
 };

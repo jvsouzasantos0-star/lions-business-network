@@ -14,5 +14,14 @@ module.exports = {
   refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d',
   databaseUrl: process.env.DATABASE_URL || '',
   appBaseUrl: process.env.APP_BASE_URL || 'http://localhost:3000',
-  publicDir: path.join(workspaceRoot, 'public')
+  publicDir: path.join(workspaceRoot, 'public'),
+  // SMTP (nodemailer) – configure via env vars for Gmail App Password
+  // SMTP_HOST=smtp.gmail.com
+  // SMTP_PORT=587
+  // SMTP_USER=seuemail@gmail.com
+  // SMTP_PASS=app-password-do-gmail
+  smtpHost: process.env.SMTP_HOST || '',
+  smtpPort: Number(process.env.SMTP_PORT || 587),
+  smtpUser: process.env.SMTP_USER || '',
+  smtpPass: process.env.SMTP_PASS || ''
 };
