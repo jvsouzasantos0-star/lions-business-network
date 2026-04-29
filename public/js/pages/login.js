@@ -11,6 +11,20 @@ const init = () => {
 
   const form = document.querySelector('#login-form');
   const status = document.querySelector('#login-status');
+  const toggleBtn = document.querySelector('#toggle-password');
+  const passwordInput = document.querySelector('#login-password');
+
+  // Toggle mostrar/ocultar senha
+  toggleBtn?.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+
+    const textEl = toggleBtn.querySelector('.toggle-eye-text');
+    if (textEl) {
+      textEl.textContent = isPassword ? 'Ocultar' : 'Mostrar';
+    }
+    toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+  });
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();

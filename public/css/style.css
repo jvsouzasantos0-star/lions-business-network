@@ -1700,3 +1700,327 @@ button {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
+
+/* ============================================================
+   LOGIN PAGE – premium redesign (classes prefixed login-)
+   ============================================================ */
+
+/* Override screen padding for auth-only pages (no bottom nav) */
+.screen.screen--auth {
+  padding: 24px 20px 40px;
+}
+
+@media (min-width: 680px) {
+  .screen.screen--auth {
+    padding: 32px 24px 48px;
+  }
+}
+
+.login-wrapper {
+  width: 100%;
+  display: grid;
+  gap: 24px;
+}
+
+/* --- Hero --- */
+.login-hero {
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.login-hero__logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.login-hero__logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgba(0, 255, 102, 0.3));
+}
+
+.login-hero__brand-name {
+  margin: 0;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 0.28em;
+  color: var(--text);
+}
+
+.login-hero__network {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: var(--text-soft);
+  text-transform: uppercase;
+  margin-top: -4px;
+}
+
+.login-hero__eyebrow {
+  margin: 10px auto 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-hero__eyebrow::before,
+.login-hero__eyebrow::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.login-hero__headline {
+  margin: 0;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.login-hero__headline em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.login-hero__subtitle {
+  margin: 0 auto;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  max-width: 38ch;
+}
+
+/* --- Card --- */
+.login-card {
+  background: rgba(12, 20, 15, 0.65);
+  border: 1px solid rgba(0, 255, 102, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: grid;
+  gap: 18px;
+}
+
+.login-card__logo-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.login-card__logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 102, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+  padding: 4px;
+}
+
+.login-card__title {
+  margin: 0;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.login-card__divider {
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 999px;
+  margin: -8px auto 0;
+}
+
+/* --- Form --- */
+.login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.login-field {
+  display: grid;
+  gap: 8px;
+}
+
+.login-field__label {
+  font-size: 0.86rem;
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.login-field__wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-field__icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.login-field__input {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  padding: 14px 16px 14px 44px;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.login-field__input:focus {
+  border-color: rgba(0, 255, 102, 0.32);
+  box-shadow: 0 0 0 4px rgba(0, 255, 102, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.login-field__input--password {
+  padding-right: 98px;
+}
+
+.login-field__toggle {
+  position: absolute;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: color 160ms ease, background 160ms ease;
+  white-space: nowrap;
+  min-height: 32px;
+}
+
+.login-field__toggle:hover {
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* --- Options row --- */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--text-soft);
+  cursor: pointer;
+  user-select: none;
+}
+
+.login-remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.login-forgot {
+  font-size: 0.84rem;
+  color: var(--accent);
+  font-weight: 600;
+  transition: opacity 160ms ease;
+}
+
+.login-forgot:hover {
+  opacity: 0.75;
+}
+
+/* --- Submit --- */
+.login-submit {
+  background: linear-gradient(135deg, #00C27A, #00E08F) !important;
+  box-shadow: 0 8px 20px rgba(0, 255, 150, 0.25) !important;
+  font-weight: 800 !important;
+  font-size: 1rem !important;
+}
+
+/* --- Card footer --- */
+.login-card-footer {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+/* --- Features row --- */
+.login-features {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.login-feature {
+  flex: 1;
+  min-width: 120px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.login-feature__icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+@media (max-width: 380px) {
+  .login-features {
+    flex-direction: column;
+  }
+
+  .login-feature {
+    flex-direction: row;
+    text-align: left;
+    min-width: unset;
+  }
+}
