@@ -112,23 +112,35 @@ export const renderTopbar = (container, { user, pageLabel = 'Área do associado'
     return;
   }
 
+  const firstName = user?.full_name?.split(' ')[0] || 'Associado';
   const planName = user?.plan?.name || 'Plano';
 
   container.innerHTML = `
-    <div class="topbar-strip glass-card">
-      <div class="topbar-strip__left">
-        <img src="/img/hero-lion.png" alt="Lions" class="topbar-strip__logo">
-        <span class="topbar-strip__page">${escapeHtml(pageLabel)}</span>
+    <section class="glass-card topbar-panel">
+      <div class="brand-row">
+        <div class="brand-badge">
+          <img src="/img/hero-lion.png" alt="Lions Business Network">
+        </div>
+        <div class="brand-copy">
+          <p class="eyebrow">${escapeHtml(pageLabel)}</p>
+          <h1>Lions Business Network</h1>
+          <p>Conectando empresarios. Gerando negocios.</p>
+        </div>
       </div>
-      <span class="plan-pill">${escapeHtml(planName)}</span>
-    </div>
+      <div class="header-actions">
+        <div>
+          <div class="tag">Olá, ${escapeHtml(firstName)}</div>
+        </div>
+        <div class="plan-pill">${escapeHtml(planName)}</div>
+      </div>
+    </section>
   `;
 };
 
 export const emptyStateMarkup = (title, message) => `
-  <article class="empty-state">
+  <article class="empty-state glass-card">
     <div>
-      <h3>${escapeHtml(title)}</h3>
+      <h3 class="section-title">${escapeHtml(title)}</h3>
       <p>${escapeHtml(message)}</p>
     </div>
   </article>
@@ -136,18 +148,27 @@ export const emptyStateMarkup = (title, message) => `
 
 export const companyCardMarkup = (company) => `
   <article class="glass-card company-card" data-company-id="${company.id}">
-    <div class="logo-shell-sm">
-      <img src="${escapeHtml(company.logo_url)}" alt="${escapeHtml(company.name)}">
+    <div class="company-card__top">
+      <div class="logo-lockup">
+        <div class="logo-shell">
+          <img src="${escapeHtml(company.logo_url)}" alt="${escapeHtml(company.name)}">
+        </div>
+        <div>
+          <p class="company-category">${escapeHtml(company.category?.name || 'Categoria')}</p>
+          <h3 class="company-name">${escapeHtml(company.name)}</h3>
+        </div>
+      </div>
+      <div class="company-discount">${escapeHtml(company.discount_percent)}% OFF</div>
     </div>
-    <div class="company-card__body">
-      <p class="company-card__category">${escapeHtml(company.category?.name || 'Categoria')}</p>
-      <h3 class="company-card__name">${escapeHtml(company.name)}</h3>
-      ${company.is_company_of_week ? '<span class="company-card__week">Empresa da semana</span>' : ''}
-    </div>
-    <div class="company-card__tail">
-      <span class="discount-tag">${escapeHtml(company.discount_percent)}% OFF</span>
-      <a class="whatsapp-button" href="${escapeHtml(company.whatsapp_url)}" target="_blank" rel="noreferrer" data-stop-card="true" aria-label="WhatsApp ${escapeHtml(company.name)}">
+    <p class="company-description">${escapeHtml(company.description || 'Sem descrição disponível.')}</p>
+    <div class="company-card__footer">
+      <div class="company-meta">
+        ${company.is_company_of_week ? '<span class="premium-badge">Empresa da semana</span>' : ''}
+        <span class="tag">${escapeHtml(company.category?.slug || 'network')}</span>
+      </div>
+      <a class="whatsapp-button" href="${escapeHtml(company.whatsapp_url)}" target="_blank" rel="noreferrer" data-stop-card="true" aria-label="Falar com ${escapeHtml(company.name)} no WhatsApp">
         ${whatsappIcon}
+        <span>WhatsApp</span>
       </a>
     </div>
   </article>
@@ -155,15 +176,19 @@ export const companyCardMarkup = (company) => `
 
 export const offerCardMarkup = (offer) => `
   <article class="glass-card offer-card">
-    <div class="offer-card__left">
-      <p class="offer-card__discount-num">${escapeHtml(offer.discount_percent)}</p>
-      <p class="offer-card__discount-off">OFF</p>
+    <div class="offer-card__top">
+      <div>
+        <p class="offer-company">${escapeHtml(offer.company?.name || 'Lions Business Network')}</p>
+        <h3 class="offer-title">${escapeHtml(offer.title)}</h3>
+      </div>
+      <div class="offer-discount">${escapeHtml(offer.discount_percent)}%</div>
     </div>
-    <div class="offer-card__body">
-      <p class="offer-card__company">${escapeHtml(offer.company?.name || 'Lions Business Network')}</p>
-      <h3 class="offer-card__title">${escapeHtml(offer.title)}</h3>
-      <p class="offer-card__expiry">Expira em ${escapeHtml(formatDate(offer.expiry_date))}</p>
-      ${offer.promo_code ? `<span class="offer-card__code">${escapeHtml(offer.promo_code)}</span>` : ''}
+    <p class="offer-description">${escapeHtml(offer.description || 'Oferta ativa para membros da rede.')}</p>
+    <div class="offer-card__footer">
+      <div class="offer-meta">
+        <span class="tag">Expira em ${escapeHtml(formatDate(offer.expiry_date))}</span>
+      </div>
+      ${offer.promo_code ? `<span class="tag">Código ${escapeHtml(offer.promo_code)}</span>` : ''}
     </div>
   </article>
 `;
@@ -175,7 +200,7 @@ export const contentCardMarkup = (content) => `
       <h3 class="content-title">${escapeHtml(content.title)}</h3>
     </div>
     <p class="content-summary">${escapeHtml(content.summary || 'Resumo não disponível.')}</p>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <div class="company-card__footer">
       <span class="tag">${escapeHtml(formatDate(content.published_at || new Date().toISOString()))}</span>
       <span class="tag">Members</span>
     </div>
@@ -193,7 +218,7 @@ export const sectionCardMarkup = (label, active) => `
   <article class="content-card">
     <h3 class="content-title">${escapeHtml(label)}</h3>
     <p class="content-summary">${active ? 'Disponível para o seu acesso atual.' : 'Indisponível no plano atual.'}</p>
-    <div>
+    <div class="company-card__footer">
       <span class="${active ? 'premium-badge' : 'tag'}">${active ? 'Ativo' : 'Bloqueado'}</span>
     </div>
   </article>

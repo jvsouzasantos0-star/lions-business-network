@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#070a08">
+  <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Lions Network">
@@ -16,13 +16,15 @@
 </head>
 <body>
   <div class="ambient-orb ambient-orb--left"></div>
+  <div class="ambient-orb ambient-orb--right"></div>
+  <div class="ambient-orb ambient-orb--bottom"></div>
   <main class="screen screen--auth">
     <section class="auth-layout">
       <article class="glass-card auth-panel">
         <div class="brand">
           <p class="eyebrow">Ecossistema exclusivo</p>
           <h1 class="brand-title">Ative sua presença na rede Lions</h1>
-          <p class="brand-subtitle">Entre para a rede e comece a gerar conexões e negócios estratégicos.</p>
+          <p class="brand-subtitle">Entre para a rede e comece a gerar conexões, oportunidades e negócios estratégicos.</p>
           <div class="stack">
             <div class="benefit-item">
               <span class="benefit-dot"></span>
@@ -30,7 +32,7 @@
             </div>
             <div class="benefit-item">
               <span class="benefit-dot"></span>
-              <span>Ofertas exclusivas da rede disponíveis.</span>
+              <span>Todas as ofertas exclusivas da rede disponíveis.</span>
             </div>
             <div class="benefit-item">
               <span class="benefit-dot"></span>
@@ -52,22 +54,22 @@
         <form id="register-form" class="auth-form">
           <label class="field">
             <span class="field-label">Nome completo</span>
-            <input class="field-input" name="full_name" type="text" placeholder="Seu Nome" autocomplete="name" required minlength="2">
+            <input class="field-input" name="full_name" type="text" placeholder="Marina Costa" autocomplete="name" required minlength="2">
           </label>
           <label class="field">
             <span class="field-label">Email</span>
-            <input class="field-input" name="email" type="email" placeholder="seu@email.com" autocomplete="email" required>
+            <input class="field-input" name="email" type="email" placeholder="marina@lionsnetwork.com" autocomplete="email" required>
           </label>
           <label class="field">
             <span class="field-label">Senha</span>
-            <input class="field-input" name="password" type="password" placeholder="••••••••" autocomplete="new-password" required minlength="8">
+            <input class="field-input" name="password" type="password" placeholder="StrongPass123!" autocomplete="new-password" required minlength="8">
           </label>
-          <button class="button button--full" type="submit">Criar conta</button>
+          <button class="button" type="submit">Criar conta</button>
           <p id="register-status" class="status" aria-live="polite"></p>
         </form>
         <div class="auth-footer">
           <span class="muted">Já tem acesso?</span>
-          <a class="auth-link" href="/login.html">Fazer login</a>
+          <a class="auth-link" href="/login.html">Voltar para login</a>
         </div>
       </article>
     </section>
