@@ -25,9 +25,9 @@ const renderDetail = (company) => {
         <div class="company-meta">
           <span class="tag">${company.category.name}</span>
           ${company.is_company_of_week ? '<span class="premium-badge">Empresa da semana</span>' : ''}
-          <span class="company-discount">${company.discount_percent}% OFF</span>
         </div>
         <h1>${company.name}</h1>
+        <span class="company-discount">${company.discount_percent}% OFF</span>
         <p>${company.description}</p>
         <div class="contact-row">
           <span class="tag">${company.phone}</span>
